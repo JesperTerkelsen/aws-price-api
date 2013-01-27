@@ -30,6 +30,7 @@ public class Price {
     private final Currency currency; // USD
     private final BigDecimal value; // 0.025
     private final PricePeriod period; // HOURLY
+    private final Integer rate; // 1000
     private final NumberFormat FORMAT;
     
     public static Price createUsdHourly(BigDecimal value) {
@@ -51,12 +52,29 @@ public class Price {
     public static Price createWithQuantity(Integer quantity, Currency currency, BigDecimal value, PricePeriod period){
         return new Price(quantity, currency, value, period);
     }
-    
+
+    public static Price createUsdWithRate(BigDecimal value, Integer rate){
+        return new Price(1, Currency.getInstance("USD"), value, PricePeriod.MONTHLY, rate);
+    }
+
     protected Price(Integer quantity, Currency currency, BigDecimal value, PricePeriod period) {
         this.quantity = quantity;
         this.currency = currency;
         this.value = value;
         this.period = period;
+        this.rate = null;
+        FORMAT = NumberFormat.getCurrencyInstance();
+        FORMAT.setMaximumFractionDigits(5);
+        FORMAT.setMinimumFractionDigits(2);
+        FORMAT.setCurrency(currency);
+    }
+
+    protected Price(Integer quantity, Currency currency, BigDecimal value, PricePeriod period, Integer rate) {
+        this.quantity = quantity;
+        this.currency = currency;
+        this.value = value;
+        this.period = period;
+        this.rate = rate;
         FORMAT = NumberFormat.getCurrencyInstance();
         FORMAT.setMaximumFractionDigits(5);
         FORMAT.setMinimumFractionDigits(2);
@@ -121,7 +139,13 @@ public class Price {
     
     @Override
     public String toString() {
-        return FORMAT.format(getTotalValue()) + period.getDisplayString();
+        NumberFormat nf = NumberFormat.getInstance();
+        if(rate != null){
+            return FORMAT.format(getTotalValue()) + "/" + nf.format(rate) + " requests";
+        } else {
+            return FORMAT.format(getTotalValue()) + period.getDisplayString();
+        }
+
     }
     
     
