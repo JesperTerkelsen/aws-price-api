@@ -3,6 +3,7 @@ package dk.deck.aws.price.api;
 import dk.deck.aws.price.api.model.Price;
 import dk.deck.aws.price.api.model.PricePeriod;
 import dk.deck.aws.price.api.model.Product;
+import dk.deck.aws.price.api.model.RequestPrice;
 import dk.deck.aws.price.api.model.s3.DataTier;
 import dk.deck.aws.price.api.model.s3.RequestType;
 import dk.deck.aws.price.api.model.s3.StorageType;
@@ -82,7 +83,7 @@ public class S3PriceList extends AbstractPriceList {
         for(Map<String, Object> type : types){
             if(type.get("name").equals(requestType.getId())){
                 String priceText = (String) ((Map<String, Object>)type.get("prices")).get("USD");
-                Price price = Price.createUsdWithRate(new BigDecimal(priceText), requestType.getRate());
+                Price price = RequestPrice.createUsdWithRate(new BigDecimal(priceText), requestType.getRate());
                 return new Product(requestType.getName(), price);
             }
         }

@@ -26,12 +26,11 @@ import java.util.Currency;
  * @author Jesper Terkelsen
  */
 public class Price {
-    private final Integer quantity; // 1
-    private final Currency currency; // USD
-    private final BigDecimal value; // 0.025
-    private final PricePeriod period; // HOURLY
-    private final Integer rate; // 1000
-    private final NumberFormat FORMAT;
+    protected final Integer quantity; // 1
+    protected final Currency currency; // USD
+    protected final BigDecimal value; // 0.025
+    protected final PricePeriod period; // HOURLY
+    protected final NumberFormat FORMAT;
     
     public static Price createUsdHourly(BigDecimal value) {
         return new Price(1, Currency.getInstance("USD"), value, PricePeriod.HOURLY);
@@ -53,28 +52,11 @@ public class Price {
         return new Price(quantity, currency, value, period);
     }
 
-    public static Price createUsdWithRate(BigDecimal value, Integer rate){
-        return new Price(1, Currency.getInstance("USD"), value, PricePeriod.MONTHLY, rate);
-    }
-
     protected Price(Integer quantity, Currency currency, BigDecimal value, PricePeriod period) {
         this.quantity = quantity;
         this.currency = currency;
         this.value = value;
         this.period = period;
-        this.rate = null;
-        FORMAT = NumberFormat.getCurrencyInstance();
-        FORMAT.setMaximumFractionDigits(5);
-        FORMAT.setMinimumFractionDigits(2);
-        FORMAT.setCurrency(currency);
-    }
-
-    protected Price(Integer quantity, Currency currency, BigDecimal value, PricePeriod period, Integer rate) {
-        this.quantity = quantity;
-        this.currency = currency;
-        this.value = value;
-        this.period = period;
-        this.rate = rate;
         FORMAT = NumberFormat.getCurrencyInstance();
         FORMAT.setMaximumFractionDigits(5);
         FORMAT.setMinimumFractionDigits(2);
@@ -139,14 +121,6 @@ public class Price {
     
     @Override
     public String toString() {
-        NumberFormat nf = NumberFormat.getInstance();
-        if(rate != null){
-            return FORMAT.format(getTotalValue()) + "/" + nf.format(rate) + " requests";
-        } else {
-            return FORMAT.format(getTotalValue()) + period.getDisplayString();
-        }
-
+         return FORMAT.format(getTotalValue()) + period.getDisplayString();
     }
-    
-    
 }
